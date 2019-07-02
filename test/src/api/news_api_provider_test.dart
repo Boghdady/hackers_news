@@ -13,7 +13,7 @@ void main() {
     newsApiProvider.client = MockClient((request) async {
       return Response(json.encode([1, 2, 3, 4]), 200);
     });
-    final ids = await newsApiProvider.fetchTopIds();
+    List<int> ids = await newsApiProvider.fetchTopIds();
     // expectation
     expect(ids, [1, 2, 3, 4]);
   });
@@ -21,13 +21,11 @@ void main() {
   // 2 - test fetchItem method
   test('FetchItem return an item model', () async {
     final newsApiProvider = NewsApiProvider();
-    // setup of test case
     newsApiProvider.client = MockClient((request) async {
       return Response(json.encode({'id': 123}), 200);
     });
     final itemModel = await newsApiProvider.fetchItem(123);
 
-    // expectation
     expect(itemModel.id, 123);
   });
 }
