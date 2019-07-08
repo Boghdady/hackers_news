@@ -1,3 +1,4 @@
+import 'package:hacker_news/src/api/repository.dart';
 import 'package:hacker_news/src/models/item_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
@@ -5,8 +6,13 @@ import 'package:path/path.dart';
 import 'dart:io';
 import 'dart:async';
 
-class NewsDbProvider {
+class NewsDbProvider implements Source, Cache {
   Database db;
+
+  // constructor
+  NewsDbProvider() {
+    init();
+  }
 
   void init() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
@@ -38,7 +44,14 @@ class NewsDbProvider {
     );
   }
 
+  @override
+  Future<List<int>> fetchTopIds() {
+    // TODO: implement fetchTopIds
+    return null;
+  }
+
   // 1- select item by id
+  @override
   Future<ItemModel> fetchItem(int id) async {
     final maps = await db.query(
       "Items",
@@ -52,8 +65,11 @@ class NewsDbProvider {
     return null;
   }
 
-  // add item
+  // add item to db
+  @override
   Future<int> addItem(ItemModel item) {
     return db.insert("Items", item.convertItemModelToMap());
   }
 }
+
+final newsDbProvider = NewsDbProvider();

@@ -1,5 +1,4 @@
 import 'package:hacker_news/src/api/news_api_provider.dart';
-import 'package:hacker_news/src/models/item_model.dart';
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:http/testing.dart';

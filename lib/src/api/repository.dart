@@ -5,22 +5,40 @@ import 'package:hacker_news/src/api/news_db_provider.dart';
 import 'package:hacker_news/src/models/item_model.dart';
 
 class Repository {
-  NewsDbProvider dbProvider = NewsDbProvider();
-  NewsApiProvider apiProvider = NewsApiProvider();
+  List<Source> sources = <Source>[
+    newsDbProvider,
+    NewsApiProvider(),
+  ];
+
+  List<Cache> caches = <Cache>[
+    newsDbProvider,
+  ];
 
   Future<List<int>> fetchTopIds() async {
-    return await apiProvider.fetchTopIds();
+    return await sources[1].fetchTopIds();
   }
 
   Future<ItemModel> fetchItem(int id) async {
-    // 1 - search about item in db
-    var item = await dbProvider.fetchItem(id);
-    if (item != null) {
-      return item;
+    ItemModel item;
+    for (Source source in sources) {
+      item = await source.fetchItem(id);
+      if (item != null) {
+        break;
+      }
     }
-    // 2 - not found item in db then get it from api and save it in db
-    item = await apiProvider.fetchItem(id);
-    dbProvider.addItem(item);
+
+    for (Cache cache in caches) {
+      cache.addItem(item);
+    }
     return item;
   }
+}
+
+abstract class Source {
+  Future<List<int>> fetchTopIds();
+  Future<ItemModel> fetchItem(int id);
+}
+
+abstract class Cache {
+  Future<int> addItem(ItemModel item);
 }
