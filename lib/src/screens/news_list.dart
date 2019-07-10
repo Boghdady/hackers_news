@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hacker_news/src/blocs/bloc_Provider.dart';
 import 'package:hacker_news/src/widgets/list_item.dart';
+import 'package:hacker_news/src/widgets/refresh_list_view.dart';
 import '../blocs/stories_bloc.dart';
 
 class NewsList extends StatelessWidget {
@@ -19,19 +20,23 @@ class NewsList extends StatelessWidget {
     return StreamBuilder(
         stream: bloc.topIds,
         builder: (context, AsyncSnapshot<List<int>> snapshot) {
+          print('number of fetched ids = ${snapshot.data.length}');
           if (!snapshot.hasData) {
             return Center(
               child: CircularProgressIndicator(),
             );
           }
-          return ListView.builder(
-            itemBuilder: (context, index) {
-              bloc.fetchItem(snapshot.data[index]);
-              return ListItem(
-                itemId: snapshot.data[index],
-              );
-            },
-            itemCount: snapshot.data.length,
+          return Refresh(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                // Try to do pagination here
+                bloc.fetchItem(snapshot.data[index]);
+                return ListItem(
+                  itemId: snapshot.data[index],
+                );
+              },
+              itemCount: snapshot.data.length,
+            ),
           );
         });
   }

@@ -36,13 +36,17 @@ class StoriesBloc implements BlocBase {
     return ScanStreamTransformer(
       // This method invoked for every new item , args { 1- map , 2- id to fetch item by id , 3- number of invoked }
       (Map<int, Future<ItemModel>> cacheMap, int id, index) {
-        print(index);
+        print('number of infoked items = $index');
         cacheMap[id] = _repository.fetchItem(id);
         return cacheMap;
       },
       // define initial empty map
       <int, Future<ItemModel>>{},
     );
+  }
+
+  clearCache() {
+    return _repository.clearCache();
   }
 
   @override
