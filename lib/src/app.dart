@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hacker_news/src/screens/news_details.dart';
 import 'package:hacker_news/src/screens/news_list.dart';
 
 import 'blocs/bloc_Provider.dart';
@@ -15,8 +16,25 @@ class App extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: NewsList(),
+        onGenerateRoute: routes,
       ),
     );
+  }
+
+  Route routes(RouteSettings settings) {
+    if (settings.name == '/') {
+      return MaterialPageRoute(
+        builder: (BuildContext context) {
+          return NewsList();
+        },
+      );
+    } else {
+      return MaterialPageRoute(builder: (BuildContext context) {
+        final int itemId = settings.arguments;
+        return NewsDetails(
+          itemId: itemId,
+        );
+      });
+    }
   }
 }
