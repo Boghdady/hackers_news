@@ -3,6 +3,7 @@ import 'package:hacker_news/src/screens/news_details.dart';
 import 'package:hacker_news/src/screens/news_list.dart';
 
 import 'blocs/bloc_Provider.dart';
+import 'blocs/comments_bloc.dart';
 import 'blocs/stories_bloc.dart';
 
 class App extends StatelessWidget {
@@ -31,9 +32,16 @@ class App extends StatelessWidget {
     } else {
       return MaterialPageRoute(builder: (BuildContext context) {
         final int itemId = settings.arguments;
-        return NewsDetails(
-          itemId: itemId,
-        );
+        final commentBloc = CommentsBloc();
+        commentBloc.fetchItemWithComments(itemId);
+
+        var newsDetailsScreen = BlocProvider(
+            child: NewsDetails(
+              itemId: itemId,
+            ),
+            bloc: commentBloc);
+
+        return newsDetailsScreen;
       });
     }
   }
